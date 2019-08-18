@@ -16,8 +16,8 @@ public abstract class Connection {
 
     private static final Logger logger = Logger.getLogger(Connection.class.getName());
 
-    final static int TIMEOUT = 7000;
-    final static int PORT = 3000;
+    final static int TIMEOUT = 120000;
+    final static int PORT = 8000;
 
     private Process serverProcess;
     private ExecutorService serverService;
@@ -103,7 +103,7 @@ public abstract class Connection {
 
     IO.Options createOptions() {
         IO.Options opts = new IO.Options();
-        opts.forceNew = true;
+        opts.forceNew = false;
         return opts;
     }
 

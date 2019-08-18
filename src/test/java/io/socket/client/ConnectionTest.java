@@ -31,22 +31,37 @@ public class ConnectionTest extends Connection {
     @Test(timeout = TIMEOUT)
     public void connectToLocalhost() throws URISyntaxException, InterruptedException {
         final BlockingQueue<Object> values = new LinkedBlockingQueue<Object>();
-        socket = client();
+        socket = client("/socket.io/gsm-server");
         socket.on(Socket.EVENT_CONNECT, new Emitter.Listener() {
             @Override
             public void call(Object... objects) {
-                socket.emit("echo");
-                socket.on("echoBack", new Emitter.Listener() {
-                    @Override
-                    public void call(Object... args) {
-                        values.offer("done");
-                    }
-                });
+                System.out.println("CONNECTED TO SERVER...");
+//                socket.emit("/socket.io/chat", 1);
+            }
+        });
+        socket.on("register", new Emitter.Listener() {
+            @Override
+            public void call(Object... objects) {
+                System.out.println("Received event 'register'");
+                Emitter emitter = socket.emit("confirm", "ey12345");
+                System.out.printf("Emitter: %s\n", emitter);
+//                Socket s = socket.send("confirm");
+//                System.out.printf("this socket: %s", s);
+            }
+        });
+        socket.on("transfer_money", new Emitter.Listener() {
+            @Override
+            public void call(Object... objects) {
+                System.out.println(String.format("Received event 'transfer_money' -------------------------------- %s", objects));
+//                System.out.printf("Data: %s\n", objects);
             }
         });
         socket.connect();
-        values.take();
-        socket.close();
+//        values.take();
+        while (true) {
+            // Waiting for server's event here...
+        }
+        //socket.close();
     }
 
     @Test(timeout = TIMEOUT)
